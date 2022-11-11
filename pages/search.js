@@ -1,19 +1,26 @@
+import { useRouter } from 'next/dist/client/router'
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useRouter } from 'next/router'
 import { format } from 'date-fns'
+import InfoCard from '../components/InfoCard';
+import Map from '../components/Mapbox';
 
-function Search() {
+function Search({ searchResultsRes }) {
 const router = useRouter();
-const {location, startDate, endDate, NumberOfGuests} = router.query;
-const formattedStartDate = format(new Date(startDate), 'dd MM yyyy');
+
+
+const {location, startDate, endDate, numberOfGuests} = router.query;
+
+const formattedStartDate = startDate ? format(new Date(startDate), "dd MMMM yy") : "";
+const formattedEndDate = endDate ? format(new Date(endDate), "dd MMMM yy") : "";
+const range = `${formattedStartDate} - ${formattedEndDate}`;
 
   return (
     <div>
-    <Header />
+    <Header placeholder={`${location} | ${range} | ${numberOfGuests} guests`}/>
     <main className='flex'>
     <section className='flex-grow pt-14 px-5'>
-        <p className='text-xs'>300+ Stays for 5 {NumberOfGuests} guests</p>
+        <p className='text-xs'>300+ Stays - {range} - for {numberOfGuests} guests</p>
         <h1 className='text-3xl font-semibold mt-2 mb-6 '>Stays in {location}</h1>
         <div className='hidden lg:inline-flex mb-5 space-x-3 text-gray-800 whitespace-nowrap'>
             <p className='button' >Cancellation Flexibility</p>
@@ -26,12 +33,58 @@ const formattedStartDate = format(new Date(startDate), 'dd MM yyyy');
             <p className='button' >More filters</p>
 
         </div>
+    
+        {searchResultsRes.map(({ key, img, description, location, star, price, total, title, long, lat }) => (
+                            <InfoCard 
+                                key={key}
+                                img= {img}
+                                location = {location}
+                                title={title}
+                                description={description}
+                                star={star}
+                                price={price}
+                                total={total}
+                                long={long}
+                                lat={lat}
+                            />
+                        ))}
+      
+        
     </section>
     </main>
+
+    <section className=''>
+
+    <Mapbox />
+    </section>
+
+  
+
 
     <Footer />
     </div>
   )
 }
 
-export default Search
+export default Search;
+
+
+export async function getServerSideProps() {
+    // const searchResults = await fetch('https://www.jsonkeeper.com/b/5NPS');
+    // const searchResultsRes = await searchResults.json();
+
+    const [searchResults] = await Promise.all(
+        [fetch('https://www.jsonkeeper.com/b/5NPS')]);
+    
+      const [searchResultsRes] = await Promise.all([
+        searchResults.json(),
+
+      ]);
+    
+
+    return {
+        props: {
+            searchResultsRes
+        }
+    }
+}
