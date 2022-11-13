@@ -51,7 +51,7 @@ function Header({placeholder}) {
       <div onClick={() => {
         router.push('/')
       }} className='relative flex items-center h-10 cursor-pointer'>
-      <Image src={"https://links.papareact.com/qd3"} layout="fill" objectFit='contain' objectPosition='left'/>
+      <Image src={"https://links.papareact.com/qd3"} layout="fill" objectFit='contain' objectPosition='left' alt='info'/>
 
       </div>
       {/* Middle = Search */}

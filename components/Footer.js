@@ -16,7 +16,7 @@ function Footer() {
             <h5 className="font-bold">COMMUNITY</h5>
             <p>Accesibility</p>
             <p>This is not a real site</p>
-            <p>This is Nykia's clone</p>
+            <p>This is Nykia clone</p>
             <p>Referrals accepted</p>
             <p>This was fun</p>
         </div>
